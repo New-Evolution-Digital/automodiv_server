@@ -1,0 +1,6 @@
+version: "3.9"
+services:
+  gateway:
+    build: ./gateway
+    ports:
+      - 7000:7000

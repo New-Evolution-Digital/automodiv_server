@@ -1,8 +1,9 @@
 import { createConnection } from "typeorm";
-import { ApolloServer, gql } from "apollo-server";
-import { buildSubgraphSchema } from "@apollo/federation";
-import { DealerAuthEntity } from "./DealerAuthEntity";
+import { ApolloServer } from "apollo-server";
 import { HOST, PORT } from "./constants";
+import { DealerAuthEntity } from "./DealerAuthEntity";
+import { AuthResolver } from "./resolver";
+import { buildSubgraphSchema } from "./helpers/buildSubgraphSchema";
 
 async function initServer() {
   await createConnection({
@@ -16,27 +17,13 @@ async function initServer() {
     synchronize: true,
   });
 
-  const typeDefs = gql`
-    type Query {
-      me: User
-    }
-
-    type User {
-      id: ID!
-      username: String
-    }
-  `;
-
-  const resolvers = {
-    Query: {
-      me() {
-        return { id: "1", username: "@ava" };
-      },
-    },
-  };
+  const schema = await buildSubgraphSchema({
+    resolvers: [AuthResolver],
+    orphanedTypes: [DealerAuthEntity],
+  });
 
   const server = new ApolloServer({
-    schema: buildSubgraphSchema([{ typeDefs: typeDefs, resolvers }]),
+    schema,
     introspection: true,
   });
 

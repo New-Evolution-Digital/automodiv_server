@@ -4,7 +4,9 @@ import { HOST, PORT } from "./constants";
 
 async function initServer() {
   const gateway = new ApolloGateway({
-    serviceList: [{ name: "dealership_auth", url: "http://172.29.0.3:7001" }],
+    serviceList: [
+      { name: "dealership_auth", url: "http://dealership_auth:7001" },
+    ],
   });
 
   const server = new ApolloServer({

@@ -1,5 +1,5 @@
 {
-  "name": "dealership_auth",
+  "name": "gateway",
   "version": "1.0.0",
   "description": "",
   "scripts": {
@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "@apollo/federation": "^0.33.3",
+    "@apollo/gateway": "^0.42.3",
     "apollo-server": "^3.4.0",
     "apollo-server-express": "^3.4.0",
     "express": "^4.17.1",

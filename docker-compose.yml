@@ -21,6 +21,7 @@ services:
       - 7001
     depends_on:
       - dealership_auth_db
+      - dealership_auth_redis
     volumes:
       - ./dealership_auth:/usr/src/app
 
@@ -32,3 +33,8 @@ services:
     image: postgres:latest
     ports:
       - "0.0.0.0:7201:5432"
+
+  dealership_auth_redis:
+    image: redis:latest
+    ports:
+      - "0.0.0.0:7202:7202"

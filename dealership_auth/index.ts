@@ -49,7 +49,11 @@ async function initServer() {
   const redis = new Redis(6379, "dealership_auth_redis");
 
   const app = express();
-  app.use(cors());
+  app.use(
+    cors({
+      credentials: true,
+    })
+  );
 
   app.use(
     session({

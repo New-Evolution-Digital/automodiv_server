@@ -1,9 +1,11 @@
+import "reflect-metadata";
 import { createConnection } from "typeorm";
 import { ApolloServer } from "apollo-server";
 import { HOST, PORT } from "./constants";
-import { DealerAuthEntity } from "./DealerAuthEntity";
+import { DealerAuthEntity } from "./entities/DealerAuthEntity";
 import { AuthResolver } from "./resolver";
 import { buildSubgraphSchema } from "./helpers/buildSubgraphSchema";
+import { resolveDealerAuthReference } from "./dealer-reference";
 
 async function initServer() {
   await createConnection({
@@ -15,16 +17,29 @@ async function initServer() {
     database: "db",
     entities: [DealerAuthEntity],
     synchronize: true,
+    logging: true,
   });
 
-  const schema = await buildSubgraphSchema({
-    resolvers: [AuthResolver],
-    orphanedTypes: [DealerAuthEntity],
-  });
+  const schema = await buildSubgraphSchema(
+    {
+      resolvers: [AuthResolver],
+      orphanedTypes: [DealerAuthEntity],
+    },
+    {
+      DealerAuthEntity: { __resolverReference: resolveDealerAuthReference },
+    }
+  );
+
+  const apolloLogging = {
+    async requestDidStart(requestContext: any) {
+      console.log("Request started! Query:\n" + requestContext.request.query);
+    },
+  };
 
   const server = new ApolloServer({
-    schema,
     introspection: true,
+    plugins: [apolloLogging],
+    schema,
   });
 
   const { url } = await server.listen({ port: PORT, host: HOST });

@@ -10,8 +10,11 @@
   "license": "ISC",
   "dependencies": {
     "@apollo/federation": "^0.33.3",
+    "@types/bcryptjs": "^2.4.2",
     "apollo-server": "^3.4.0",
     "apollo-server-express": "^3.4.0",
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "graphql": "^15.6.1",
     "graphql-tag": "^2.12.5",

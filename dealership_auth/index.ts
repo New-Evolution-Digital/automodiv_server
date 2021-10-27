@@ -51,6 +51,7 @@ async function initServer() {
   const app = express();
   app.use(
     cors({
+      origin: "http://localhost:3000",
       credentials: true,
     })
   );
@@ -65,7 +66,7 @@ async function initServer() {
       cookie: {
         maxAge: 1000 * 60 * 60 * 24,
         httpOnly: true,
-        sameSite: "none",
+        sameSite: "lax",
       },
       saveUninitialized: false,
       secret: process.env.secret || "secret",
@@ -82,6 +83,10 @@ async function initServer() {
 
   await server.start();
   server.applyMiddleware({ app, cors: false });
+
+  app.get("/", (_, res) => {
+    res.status(200).send("Server Is Working").end();
+  });
 
   app.listen({ port: PORT, host: HOST });
 

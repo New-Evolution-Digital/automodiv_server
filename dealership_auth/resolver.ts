@@ -11,18 +11,20 @@ import {
 } from "type-graphql";
 import { IsEmail } from 'class-validator';
 import { DealerAuthEntity } from "./entities/DealerAuthEntity";
+import { IsEmailAlreadyExist } from "modules/isEmailAlreadyExists";
 import bcrypt from "bcryptjs";
 import dotenv from "dotenv";
 import { getRepository } from "typeorm";
 dotenv.config();
 
 @ArgsType()
-export class DealerAdminInputType {
+class DealerAdminInputType {
   @Field()
   username: string;
 
   @Field()
   @IsEmail()
+  @IsEmailAlreadyExist({message: "email already exists"})
   email: string;
 
   @Field(() => String)
@@ -74,26 +76,26 @@ export class AuthResolver {
       password: hashed,
       username,
     });
-
-    let user;
-    try {
-      user = await newAdminInstance.save();
-    } catch (error) {
-      if (error.code === "23505") {
-        return {
-          errors: [
-            {
-              field: "username",
-              message: "username already taken",
-            },
-            {
-              field: "email",
-              message: "email already taken",
-            },
-          ],
-        };
-      }
-    }
+    const user = await newAdminInstance.save();
+    // let user;
+    // try {
+    //   user = await newAdminInstance.save();
+    // } catch (error) {
+    //   if (error.code === "23505") {
+    //     return {
+    //       errors: [
+    //         {
+    //           field: "username",
+    //           message: "username already taken",
+    //         },
+    //         {
+    //           field: "email",
+    //           message: "email already taken",
+    //         },
+    //       ],
+    //     };
+    //   }
+    // }
 
     req.session.userId = user?.id;
     return { user };

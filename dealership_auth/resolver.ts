@@ -86,6 +86,10 @@ export class AuthResolver {
               field: "username",
               message: "username already taken",
             },
+            {
+              field: "email",
+              message: "email already taken",
+            },
           ],
         };
       }

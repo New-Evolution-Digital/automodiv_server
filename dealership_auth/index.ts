@@ -21,11 +21,11 @@ async function initServer() {
     type: "postgres",
     host: "dealership_auth_db",
     port: 5432,
-    username: "test",
-    password: "password",
-    database: "db",
+    username: process.env.POSTGRES_USER,
+    password: process.env.POSTGRES_PASSWORD,
+    database: process.env.POSTGRES_DB,
     entities: [DealerAuthEntity],
-    synchronize: true,
+    synchronize: process.env.NODE_ENV === "development",
     // logging: true,
   });
 
@@ -65,8 +65,9 @@ async function initServer() {
       }),
       cookie: {
         maxAge: 1000 * 60 * 60 * 24,
-        httpOnly: true,
-        sameSite: "lax",
+        httpOnly: process.env.NODE_ENV === "development",
+        sameSite: process.env.GRAPHQL_DEV ? "none" : "lax",
+        secure: true,
       },
       saveUninitialized: false,
       secret: process.env.secret || "secret",
@@ -74,9 +75,16 @@ async function initServer() {
     })
   );
 
+  const getPlugins = () => {
+    if (process.env.NODE_ENV !== "development") {
+      return [];
+    }
+    return [apolloLogging];
+  };
+
   const server = new ApolloServer({
     introspection: true,
-    plugins: [apolloLogging],
+    plugins: getPlugins(),
     schema,
     context: ({ req, res }) => ({ req, res, redis }),
   });

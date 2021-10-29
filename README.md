@@ -3,6 +3,7 @@
 Backend server utilizing Docker, Typescript, Apollo, GraphQL, and TypeOrm
 
 ## Service
+
 1. Gateway
 2. Dealership_Auth
 
@@ -17,19 +18,32 @@ Backend server utilizing Docker, Typescript, Apollo, GraphQL, and TypeOrm
 
 In order to run server on development, please make sure you have docker installed on your system.
 
+### 1) Build Packages
+
 Run the following bash command to start all docker containers
+
 ```console
-docker-compose up
+docker-compose build
+```
+
+### 2) Create Env for Composition
+
+```
+cp .env.example .env
+```
+
+Run the following bash command to start all docker containers
+
+```console
+docker-compose --env-file .env up
 ```
 
 > **Issues With Docker**
 >
 > In the case one encounters errors with either databases, redis, or one of the services, first try the following bash command
-> ```console 
+>
+> ```console
 > docker-compose down
 > ```
 >
-> Then run the next command
-> ```console
-> docker-compose up
-> ```
+> Then repeat the installation steps

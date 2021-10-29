@@ -37,4 +37,6 @@ services:
   dealership_auth_redis:
     image: redis:latest
     ports:
-      - "0.0.0.0:7202:7202"
+      - "0.0.0.0:7202:6379"
+    expose:
+      - 7202

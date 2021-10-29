@@ -8,13 +8,13 @@ import {
   ObjectType,
   Query,
   Resolver,
-} from "type-graphql";
+} from 'type-graphql';
 import { IsEmail } from 'class-validator';
-import { DealerAuthEntity } from "./entities/DealerAuthEntity";
-import { IsEmailAlreadyExist } from "modules/isEmailAlreadyExists";
-import bcrypt from "bcryptjs";
-import dotenv from "dotenv";
-import { getRepository } from "typeorm";
+import { DealerAuthEntity } from './entities/DealerAuthEntity';
+import { IsEmailAlreadyExist } from './validator/isEmailAlreadyExists';
+import bcrypt from 'bcryptjs';
+import dotenv from 'dotenv';
+import { getRepository } from 'typeorm';
 dotenv.config();
 
 @ArgsType()
@@ -24,7 +24,7 @@ class DealerAdminInputType {
 
   @Field()
   @IsEmail()
-  @IsEmailAlreadyExist({message: "email already exists"})
+  @IsEmailAlreadyExist({ message: 'email already exists' })
   email: string;
 
   @Field(() => String)
@@ -103,8 +103,8 @@ export class AuthResolver {
 
   @Mutation(() => UserResponse)
   async login(
-    @Arg("email") email: string,
-    @Arg("password") password: string,
+    @Arg('email') email: string,
+    @Arg('password') password: string,
     @Ctx() { req }: serverContext
   ): Promise<UserResponse> {
     const user = await DealerAuthEntity.findOne({ where: { email } });
@@ -113,7 +113,7 @@ export class AuthResolver {
       return {
         errors: [
           {
-            field: "email",
+            field: 'email',
             message: "this email doesn't exist",
           },
         ],
@@ -126,7 +126,7 @@ export class AuthResolver {
       return {
         errors: [
           {
-            field: "password",
+            field: 'password',
             message: "Email/Password Combo Doesn't Exist",
           },
         ],

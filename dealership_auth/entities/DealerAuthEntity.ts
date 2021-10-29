@@ -33,7 +33,7 @@ export class DealerAuthEntity extends BaseEntity {
   last_name: string;
 
   @Field()
-  @Column({ unique: true })
+  @Column('text',{ unique: true })
   email: string;
 
   @Column()

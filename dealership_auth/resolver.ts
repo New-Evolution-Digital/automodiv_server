@@ -9,6 +9,7 @@ import {
   Query,
   Resolver,
 } from "type-graphql";
+import { IsEmail } from 'class-validator';
 import { DealerAuthEntity } from "./entities/DealerAuthEntity";
 import bcrypt from "bcryptjs";
 import dotenv from "dotenv";
@@ -21,6 +22,7 @@ export class DealerAdminInputType {
   username: string;
 
   @Field()
+  @IsEmail()
   email: string;
 
   @Field(() => String)

@@ -17,16 +17,27 @@ import { resolveDealerAuthReference } from "./dealer-reference";
 dotenv.config();
 
 async function initServer() {
+  let config;
+  if (!!process.env.DATABASE_URL) {
+    config = {
+      url: process.env.DATABASE_URL,
+      ssl: { rejectUnauthorized: false },
+    };
+  } else {
+    config = {
+      port: 5432,
+      username: process.env.POSTGRES_USER,
+      password: process.env.POSTGRES_PASSWORD,
+      database: process.env.POSTGRES_DB,
+      host: "dealership_auth_db",
+    };
+  }
+
   await createConnection({
     type: "postgres",
-    host: "dealership_auth_db",
-    port: 5432,
-    username: process.env.POSTGRES_USER,
-    password: process.env.POSTGRES_PASSWORD,
-    database: process.env.POSTGRES_DB,
     entities: [DealerAuthEntity],
-    synchronize: process.env.NODE_ENV === "development",
-    // logging: true,
+    synchronize: true,
+    ...config,
   });
 
   const apolloLogging = {
@@ -46,7 +57,11 @@ async function initServer() {
   );
 
   const RedisStore = connectRedis(session);
-  const redis = new Redis(6379, "dealership_auth_redis");
+  let redis: Redis.Redis;
+  (() => {
+    if (process.env.REDIS_URL) redis = new Redis(process.env.REDIS_URL);
+    else redis = new Redis(6379, "dealership_auth_redis");
+  })();
 
   const app = express();
   app.use(
@@ -70,7 +85,7 @@ async function initServer() {
         secure: true,
       },
       saveUninitialized: false,
-      secret: process.env.secret || "secret",
+      secret: process.env.SECRET || "secret",
       resave: false,
     })
   );
@@ -90,15 +105,20 @@ async function initServer() {
   });
 
   await server.start();
-  server.applyMiddleware({ app, cors: false });
 
   app.get("/", (_, res) => {
-    res.status(200).send("Server Is Working").end();
+    res.status(200).send("Dealership Auth Server Is Working").end();
   });
+
+  server.applyMiddleware({ app, cors: false });
 
   app.listen({ port: PORT, host: HOST });
 
-  console.log(`Running on ${HOST}:${PORT}`);
+  let displayHost: string;
+  displayHost = HOST !== "0.0.0.0" ? HOST : "http://localhost";
+
+  console.log(`Running on ${displayHost}:${PORT}`);
+  console.log(`GraphQL listening on ${displayHost}:${PORT}/graphql`);
 }
 
 initServer();

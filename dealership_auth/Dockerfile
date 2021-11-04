@@ -1,20 +1,28 @@
 #Base Image
-FROM node:latest
+FROM node:lts-alpine3.11 as prod
 
-#define node modules(nm's) cache
-RUN mkdir /usr/src/cache
-WORKDIR /usr/src/cache
+# Create App Directory
+WORKDIR /app
 
-#install nm's in cache
 COPY package*.json ./
+
+# Install node_modules into app directory
 RUN npm install
 
-
-RUN mkdir -p /usr/src/app
-WORKDIR /usr/src/app
-COPY ./entrypoint.sh /usr/src/app/
 COPY . .
-RUN chmod +x entrypoint.sh
-ENTRYPOINT ["./entrypoint.sh"]
 
-CMD [ "npm", "start" ]
+ENV NODE_ENV=production
+
+CMD [ "npm", "start"]
+
+FROM prod as dev
+
+EXPOSE 7001
+
+ENV NODE_ENV=development
+
+RUN npm install -g nodemon
+
+RUN npm install --only=dev
+
+CMD ["npm","run","dev"]

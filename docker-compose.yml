@@ -1,7 +1,9 @@
 version: "3"
 services:
   gateway:
-    build: ./gateway
+    build:
+      context: ./gateway
+      target: dev
     environment:
       NODE_ENV: ${NODE_ENV}
       GRAPHQL_DEV: ${GRAPHQL_DEV}
@@ -16,7 +18,9 @@ services:
       - ./gateway:/usr/src/app
 
   dealership_auth:
-    build: ./dealership_auth
+    build:
+      context: ./dealership_auth
+      target: dev
     environment:
       NODE_ENV: ${NODE_ENV}
       GRAPHQL_DEV: ${GRAPHQL_DEV}

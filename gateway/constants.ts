@@ -12,6 +12,5 @@ export { host, originLink, port };
 
 export let serviceLinkList: { [key: string]: string } = {
   dealership_auth:
-    process.env.DEALERSHIP_AUTH_URL ||
-    "https://qty-dealership-auth.herokuapp.com/graphql",
+    process.env.DEALERSHIP_AUTH_URL || "http://dealership_auth:7001",
 };

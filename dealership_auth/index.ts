@@ -57,7 +57,11 @@ async function initServer() {
   );
 
   const RedisStore = connectRedis(session);
-  const redis = new Redis(process.env.REDIS_URL);
+  let redis: Redis.Redis;
+  (() => {
+    if (process.env.REDIS_URL) redis = new Redis(process.env.REDIS_URL);
+    else redis = new Redis(6379, "dealership_auth_redis");
+  })();
 
   const app = express();
   app.use(
@@ -108,7 +112,7 @@ async function initServer() {
 
   server.applyMiddleware({ app, cors: false });
 
-  app.listen(PORT);
+  app.listen({ port: PORT, host: HOST });
 
   let displayHost: string;
   displayHost = HOST !== "0.0.0.0" ? HOST : "http://localhost";

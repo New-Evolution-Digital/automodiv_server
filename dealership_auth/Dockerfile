@@ -14,3 +14,15 @@ COPY . .
 ENV NODE_ENV=production
 
 CMD [ "npm", "start"]
+
+FROM prod as dev
+
+EXPOSE 7001
+
+ENV NODE_ENV=development
+
+RUN npm install -g nodemon
+
+RUN npm install --only=dev
+
+CMD ["npm","run","dev"]

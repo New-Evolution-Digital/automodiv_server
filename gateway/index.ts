@@ -1,18 +1,25 @@
-import { ApolloGateway } from "@apollo/gateway";
+import { ApolloGateway, ServiceEndpointDefinition } from "@apollo/gateway";
 import { ApolloServer } from "apollo-server-express";
 import dotenv from "dotenv";
 import cors from "cors";
 import express from "express";
 import waitOn from "wait-on";
-import { host, originLink, port } from "./constants";
+import { host, originLink, port, serviceLinkList } from "./constants";
 
 dotenv.config();
 
+let serviceList: ServiceEndpointDefinition[] = [];
+
+for (const key in serviceLinkList) {
+  if (Object.prototype.hasOwnProperty.call(serviceLinkList, key)) {
+    const link = serviceLinkList[key];
+    serviceList.push({ name: key, url: link });
+  }
+}
+
 async function initServer() {
   const gateway = new ApolloGateway({
-    serviceList: [
-      { name: "dealership_auth", url: "http://dealership_auth:7001/graphql" },
-    ],
+    serviceList,
   });
 
   const app = express();

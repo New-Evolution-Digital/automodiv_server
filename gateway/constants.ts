@@ -9,3 +9,9 @@ if (process.env.NODE_ENV === "development" && process.env.GRAPHQL_DEV)
   originLink = "https://studio.apollographql.com";
 
 export { host, originLink, port };
+
+export let serviceLinkList: { [key: string]: string } = {
+  dealership_auth:
+    process.env.DEALERSHIP_AUTH_URL ||
+    "https://qty-dealership-auth.herokuapp.com/graphql",
+};

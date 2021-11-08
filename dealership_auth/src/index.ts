@@ -7,6 +7,7 @@ import express from "express";
 import session from "express-session";
 import Redis from "ioredis";
 import { createConnection } from "typeorm";
+import morgan from "morgan";
 
 import { HOST, PORT } from "./constants";
 import { DealerAuthEntity } from "./entities/DealerAuthEntity";
@@ -60,35 +61,10 @@ async function initServer() {
   let redis: Redis.Redis;
   (() => {
     if (process.env.REDIS_URL) redis = new Redis(process.env.REDIS_URL);
-    else redis = new Redis(6379, "dealership_auth_redis");
+    else redis = new Redis(6379, "dealership_auth_redis", {});
   })();
 
   const app = express();
-  app.use(
-    cors({
-      origin: "http://localhost:3000",
-      credentials: true,
-    })
-  );
-
-  app.use(
-    session({
-      name: "neaid",
-      store: new RedisStore({
-        client: redis,
-        disableTouch: true,
-      }),
-      cookie: {
-        maxAge: 1000 * 60 * 60 * 24,
-        httpOnly: process.env.NODE_ENV === "development",
-        sameSite: process.env.GRAPHQL_DEV ? "none" : "lax",
-        secure: true,
-      },
-      saveUninitialized: false,
-      secret: process.env.SECRET || "secret",
-      resave: false,
-    })
-  );
 
   const getPlugins = () => {
     if (process.env.NODE_ENV !== "development") {
@@ -105,7 +81,31 @@ async function initServer() {
   });
 
   await server.start();
+  process.env.NODE_ENV === "development" && app.use(morgan("dev"));
+  app.use(
+    cors({
+      origin: process.env.ORIGIN_LINK,
+      credentials: true,
+    })
+  );
 
+  app.use(
+    session({
+      name: "amdid",
+      store: new RedisStore({
+        client: redis,
+        disableTouch: true,
+      }),
+      cookie: {
+        maxAge: 1000 * 60 * 60 * 24,
+        sameSite: process.env.GRAPHQL_DEV === "true" ? "none" : "lax",
+        secure: process.env.NODE_ENV !== "development",
+      },
+      saveUninitialized: false,
+      secret: process.env.REDIS_SECRET || "secret",
+      resave: false,
+    })
+  );
   app.get("/", (_, res) => {
     res.status(200).send("Dealership Auth Server Is Working").end();
   });

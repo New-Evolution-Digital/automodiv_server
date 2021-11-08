@@ -1,5 +1,5 @@
 #Base Image
-FROM node:lts-alpine as base
+FROM node:lts-alpine as prod
 
 # Create App Directory
 WORKDIR /app
@@ -11,15 +11,15 @@ RUN npm install
 
 COPY . .
 
-FROM base as production
+ENV NODE_ENV=production
 
-ENV NODE_PATH=./build
-
-RUN npm run build
+CMD [ "npm", "start"]
 
 FROM prod as dev
 
-EXPOSE 7001
+EXPOSE 7002
+
+ENV NODE_ENV=development
 
 RUN npm install -g nodemon
 

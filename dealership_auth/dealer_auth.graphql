@@ -1,6 +1,0 @@
-"""
-Exposes a URL that specifies the behaviour of this scalar.
-"""
-type Query {
-  me: String!
-}

@@ -8,6 +8,8 @@ services:
       NODE_ENV: ${NODE_ENV}
       GRAPHQL_DEV: ${GRAPHQL_DEV}
       ORIGIN_LINK: ${ORIGIN_LINK}
+      GATEWAY_INIT_HEADER_NAME: ${GATEWAY_INIT_HEADER_NAME}
+      GATEWAY_INIT_HEADER_VALUE: ${GATEWAY_INIT_HEADER_VALUE}
     ports:
       - "7000:7000"
     expose:
@@ -15,11 +17,13 @@ services:
     depends_on:
       - dealership_auth
     volumes:
-      - ./gateway:/usr/src/app
+      - ./gateway:/app
+    command: npm run dev
 
-  dealership_auth:
+  dealership_org:
     build:
-      context: ./dealership_auth
+      context: ./dealership_org
+      dockerfile: Dockerfile
       target: dev
     environment:
       NODE_ENV: ${NODE_ENV}
@@ -28,6 +32,38 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: db
     ports:
+      - "7002:7002"
+    expose:
+      - 7002
+    depends_on:
+      - dealership_org_db
+    volumes:
+      - ./dealership_org:/app
+    command: npm run dev
+
+  dealership_org_db:
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=db
+    image: postgres:latest
+    ports:
+      - "7203:5432"
+
+  dealership_auth:
+    build:
+      context: ./dealership_auth
+      dockerfile: Dockerfile
+      target: base
+    environment:
+      NODE_ENV: ${NODE_ENV}
+      GRAPHQL_DEV: ${GRAPHQL_DEV}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: db
+      ORIGIN_LINK: ${ORIGIN_LINK}
+      REDIS_SECRET: ${REDIS_SECRET}
+    ports:
       - "7001:7001"
     expose:
       - 7001
@@ -35,7 +71,8 @@ services:
       - dealership_auth_db
       - dealership_auth_redis
     volumes:
-      - ./dealership_auth:/usr/src/app
+      - ./dealership_auth:/app
+    command: npm run dev
 
   dealership_auth_db:
     environment:

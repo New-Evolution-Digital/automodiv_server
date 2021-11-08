@@ -1,9 +1,0 @@
-{
-  "name": "default",
-  "type": "postgres",
-  "host": "dealership_auth_db",
-  "port": 5432,
-  "username": "test",
-  "password": "password",
-  "database": "db"
-}

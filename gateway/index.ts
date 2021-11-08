@@ -5,6 +5,7 @@ import cors from "cors";
 import express from "express";
 import waitOn from "wait-on";
 import { host, originLink, port, serviceLinkList } from "./constants";
+import AppSource from "./gatewaySource";
 
 dotenv.config();
 
@@ -22,16 +23,21 @@ for (const key in serviceLinkList) {
 async function initServer() {
   const gateway = new ApolloGateway({
     serviceList,
+    buildService({ url }) {
+      return new AppSource({ url });
+    }
   });
 
   const app = express();
 
   const server = new ApolloServer({
     gateway,
-    context: ({ req, res }) => ({ req, res }),
+    context: ({ req, res }) => ({ req, res })
   });
 
   await server.start();
+
+  console.log(originLink);
 
   app.use(cors({ origin: originLink, credentials: true }));
 

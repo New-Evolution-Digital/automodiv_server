@@ -1,5 +1,5 @@
 #Base Image
-FROM node:lts-alpine3.11 as prod
+FROM node as prod
 
 # Create App Directory
 WORKDIR /app

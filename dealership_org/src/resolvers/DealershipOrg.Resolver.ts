@@ -26,6 +26,9 @@ class DealershipOrgInputs implements Partial<DealershipOrg> {
 
   @Field(() => Int, { nullable: true })
   readonly zip?: number;
+
+  @Field(() => Int, { nullable: true })
+  readonly default_dealer_number?: number;
 }
 
 @Resolver()

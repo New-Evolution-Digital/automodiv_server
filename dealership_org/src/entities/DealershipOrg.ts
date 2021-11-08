@@ -4,15 +4,15 @@ import {
   CreateDateColumn,
   Entity,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
+  UpdateDateColumn
 } from "typeorm";
-import { Directive, Field, ObjectType } from "type-graphql";
+import { Directive, Field, Int, ObjectType } from "type-graphql";
 
 @Entity()
 @ObjectType("DealershipOrg")
 @Directive('@Key(fields: "id")')
 export class DealershipOrg extends BaseEntity {
-  @Field()
+  @Field(() => Int)
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -32,9 +32,13 @@ export class DealershipOrg extends BaseEntity {
   @Column({ nullable: true })
   state?: string;
 
-  @Field({ nullable: true })
+  @Field(() => Int, { nullable: true })
   @Column({ type: "int", nullable: true })
   zip?: number;
+
+  @Field(() => Int, { nullable: true })
+  @Column({ type: "int", nullable: true })
+  default_dealer_number?: number;
 
   @Column({ type: "integer" })
   root_user: number;

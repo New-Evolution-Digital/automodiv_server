@@ -17,4 +17,6 @@ export let serviceLinkList: { [key: string]: string } = {
     process.env.DEALERSHIP_AUTH_URL || "http://dealership_auth:7001",
   dealership_org:
     process.env.DEALERSHIP_ORG_URL || "http://dealership_org:7002",
+  dealership_inv:
+    process.env.DEALERSHIP_INV_URL || "http://dealership_inv:7003",
 };

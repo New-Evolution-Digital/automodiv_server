@@ -6,6 +6,8 @@ Backend server utilizing Docker, Typescript, Apollo, GraphQL, and TypeOrm
 
 1. Gateway
 2. Dealership_Auth
+3. Dealership_Org
+4. Dealership_Inv
 
 ## Containers
 
@@ -13,6 +15,10 @@ Backend server utilizing Docker, Typescript, Apollo, GraphQL, and TypeOrm
 2. dealership_auth
 3. dealership_auth_db: Postgres
 4. dealership_auth_redis: Redis
+5. dealership_org
+6. dealership_org_db: Postgres
+7. dealership_inv
+8. dealership_inv_db: Postgres
 
 ## Docker: Run Instructions
 

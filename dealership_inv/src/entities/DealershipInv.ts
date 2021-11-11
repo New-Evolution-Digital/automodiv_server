@@ -56,15 +56,4 @@ export class DealershipInv extends BaseEntity {
   @Field()
   @UpdateDateColumn({ type: "timestamp with time zone" })
   updatedAt: string;
-}
-
-/* 
-Dealership_inventory Schema
-
-
-
-
-
-
-notes: string // Textfield - option
-*/
+};

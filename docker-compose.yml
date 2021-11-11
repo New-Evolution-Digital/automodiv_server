@@ -49,6 +49,36 @@ services:
     image: postgres:latest
     ports:
       - "7203:5432"
+  
+  dealership_inv:
+    build:
+      context: ./dealership_inv
+      dockerfile: Dockerfile
+      target: dev
+    environment:
+      NODE_ENV: ${NODE_ENV}
+      GRAPHQL_DEV: ${GRAPHQL_DEV}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: db
+    ports:
+      - "7003:7003"
+    expose:
+      - 7003
+    depends_on:
+      - dealership_inv_db
+    volumes:
+      - ./dealership_inv:/app
+    command: npm run dev
+
+  dealership_inv_db:
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=db
+    image: postgres:latest
+    ports:
+      - "7204:5432"
 
   dealership_auth:
     build:
